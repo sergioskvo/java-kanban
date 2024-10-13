@@ -1,6 +1,5 @@
 package model;
 
-import model.StatusCodes;
 
 public class Task {
     private String name;

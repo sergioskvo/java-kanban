@@ -1,7 +1,5 @@
 package model;
 
-import model.StatusCodes;
-import model.Task;
 
 public class Epic extends Task {
 
