@@ -1,3 +1,6 @@
+import controllers.TaskManager;
+import model.*;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -21,11 +24,13 @@ public class Main {
         System.out.println(taskManager.getTasksList());
         System.out.println(taskManager.getEpicsList());
         System.out.println(taskManager.getSubTasksList());
-        taskManager.refreshTask(TasksTypes.SUBTASK);
+        SubTask subTask5 = new SubTask("Написан проект 4", "Написано!!", 4, StatusCodes.DONE,3);
+        taskManager.refreshTask(subTask5);
         System.out.println(taskManager.getTasksList());
         System.out.println(taskManager.getEpicsList());
         System.out.println(taskManager.getSubTasksList());
-        taskManager.refreshTask(TasksTypes.SUBTASK);
+        SubTask subTask6 = new SubTask("Написан проект 5", "Написано!!", 5, StatusCodes.DONE,3);
+        taskManager.refreshTask(subTask6);
         System.out.println(taskManager.getTasksList());
         System.out.println(taskManager.getEpicsList());
         System.out.println(taskManager.getSubTasksList());
@@ -38,5 +43,6 @@ public class Main {
         System.out.println(taskManager.getTasksList());
         System.out.println(taskManager.getEpicsList());
         System.out.println(taskManager.getSubTasksList());
+
     }
 }
