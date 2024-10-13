@@ -45,6 +45,7 @@ public class Task {
     public void setStatus(StatusCodes status) {
         this.status = status;
     }
+
     public TasksTypes getType() {
         return TasksTypes.TASK;
     }
