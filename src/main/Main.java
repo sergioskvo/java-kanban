@@ -1,3 +1,4 @@
+import controllers.InMemoryTaskManager;
 import controllers.TaskManager;
 import model.*;
 
@@ -12,7 +13,7 @@ public class Main {
         SubTask subTask2 = new SubTask("Написать проект спринта 5", "Написать проект спринта 5", 3);
         Epic epic2 = new Epic("Заказать вещи","Заказать вещи");
         SubTask subTask3 = new SubTask("Заказать шорты", "Заказать шорты", 6);
-        TaskManager taskManager = new TaskManager();
+        TaskManager taskManager = new InMemoryTaskManager();
         taskManager.saveTask(task1);
         taskManager.saveTask(task2);
         taskManager.saveTask(epic1);

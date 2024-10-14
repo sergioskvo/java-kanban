@@ -1,29 +1,36 @@
 package controllers;
 
+import model.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import model.*;
-
-
-public class TaskManager {
+public class InMemoryTaskManager implements TaskManager {
     public static int taskId = 0;
     private HashMap<Integer, Task> tasksList = new HashMap<>();
     private HashMap<Integer, Epic> epicsList = new HashMap<>();
     private HashMap<Integer, SubTask> subTasksList = new HashMap<>();
+    private final HistoryManager historyManager;
 
+    public InMemoryTaskManager() {
+        this.historyManager = Managers.getDefaultHistory();
+    }
+
+    @Override
     public int saveTask(Task task) {
         task.setIdNumber(++taskId);
         tasksList.put(taskId, task);
         return taskId;
     }
 
+    @Override
     public int saveTask(Epic epic) {
         epic.setIdNumber(++taskId);
         epicsList.put(taskId, epic);
         return taskId;
     }
 
+    @Override
     public Integer saveTask(SubTask subTask) {
         if (epicsList.containsKey(subTask.getEpicIdNumber())) {
             subTask.setIdNumber(++taskId);
@@ -56,6 +63,7 @@ public class TaskManager {
         return size == c;
     }
 
+    @Override
     public void deleteAllTasksWithType(TasksTypes taskType) {
         switch (taskType) {
             case TasksTypes.TASK:
@@ -79,12 +87,16 @@ public class TaskManager {
         }
     }
 
+    @Override
     public Task getTaskViaId(int taskId) {
         if (tasksList.containsKey(taskId)) {
+            historyManager.historyCashAddAndCheck(tasksList.get(taskId));
             return tasksList.get(taskId);
         } else if (epicsList.containsKey(taskId)) {
+            historyManager.historyCashAddAndCheck(epicsList.get(taskId));
             return epicsList.get(taskId);
         } else if (subTasksList.containsKey(taskId)) {
+            historyManager.historyCashAddAndCheck(subTasksList.get(taskId));
             return subTasksList.get(taskId);
         } else {
             System.out.println("Нет задачи с таким id, вернулось null");
@@ -92,6 +104,7 @@ public class TaskManager {
         }
     }
 
+    @Override
     public Integer refreshTask(Task refreshTask) {
         int idNumber;
         TasksTypes taskType = refreshTask.getType();
@@ -121,11 +134,22 @@ public class TaskManager {
         }
     }
 
+    @Override
     public void deleteViaId(int taskId) {
         if (tasksList.containsKey(taskId)) {
             tasksList.remove(taskId);
         } else if (epicsList.containsKey(taskId)) {
+            ArrayList<Integer> idSubTasksForDel = new ArrayList<>();
+            for (SubTask subTask : subTasksList.values()) {
+                if (subTask.getEpicIdNumber() == taskId) {
+                    idSubTasksForDel.add(subTask.getIdNumber());
+                }
+            }
+            for (int i : idSubTasksForDel) {
+                subTasksList.remove(i);
+            }
             epicsList.remove(taskId);
+            System.out.println("Удален эпик и, соотвественно, всего подзадачи");
         } else if (subTasksList.containsKey(taskId)) {
             int epicId = subTasksList.get(taskId).getEpicIdNumber();
             subTasksList.remove(taskId);
@@ -135,6 +159,7 @@ public class TaskManager {
         }
     }
 
+    @Override
     public HashMap<Integer, SubTask> getSubTasksFromEpic(int epicTaskId) {
         HashMap<Integer, SubTask> response = new HashMap<>();
         if (!epicsList.containsKey(epicTaskId)) {
@@ -150,14 +175,17 @@ public class TaskManager {
         return response;
     }
 
+    @Override
     public ArrayList<Task> getTasksList() {
         return new ArrayList<>(tasksList.values());
     }
 
+    @Override
     public ArrayList<Epic> getEpicsList() {
         return new ArrayList<>(epicsList.values());
     }
 
+    @Override
     public ArrayList<SubTask> getSubTasksList() {
         return new ArrayList<>(subTasksList.values());
     }
