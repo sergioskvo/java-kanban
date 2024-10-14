@@ -117,6 +117,16 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
+    void refreshEpicTaskThatExists() {
+        Epic expectedResult = new Epic("Тест", "Тест описание");
+        expectedResult.setIdNumber(3);
+        expectedResult.setStatus(StatusCodes.NEW);
+        assertEquals(3, inMemoryTaskManagerForList.refreshTask(expectedResult));
+        assertEquals("Тест", inMemoryTaskManagerForList.getTaskViaId(3).getName());
+        assertEquals("Тест описание", inMemoryTaskManagerForList.getTaskViaId(3).getDescription());
+    }
+
+    @Test
     void refreshTaskThatDoesNotExists() {
         Task expectedResult = new Task("Тест", "Тест");
         expectedResult.setIdNumber(10004);

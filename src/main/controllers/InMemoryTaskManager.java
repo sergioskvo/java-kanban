@@ -68,22 +68,18 @@ public class InMemoryTaskManager implements TaskManager {
         switch (taskType) {
             case TasksTypes.TASK:
                 tasksList.clear();
-                System.out.println("Список с обычными задачами очищен");
                 break;
             case TasksTypes.EPIC:
                 epicsList.clear();
                 subTasksList.clear();
-                System.out.println("Список эпиков очищен вместе со списком подзадач (а иначе смысл подзадач без эпиков)");
                 break;
             case TasksTypes.SUBTASK:
                 subTasksList.clear();
                 for (Epic epic : epicsList.values()) {
                     epic.setStatus(StatusCodes.NEW);
                 }
-                System.out.println("Список с подзадачами очищен");
                 break;
             default:
-                System.out.println("Нет такого типа задачи");
         }
     }
 
@@ -99,7 +95,6 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.historyCashAddAndCheck(subTasksList.get(taskId));
             return subTasksList.get(taskId);
         } else {
-            System.out.println("Нет задачи с таким id, вернулось null");
             return null;
         }
     }
@@ -129,6 +124,17 @@ public class InMemoryTaskManager implements TaskManager {
                 subTasksList.put(idNumber, refreshSubTask);
                 refreshEpicStatus(getSubTasksFromEpic(epicId), epicId);
                 return idNumber;
+            case TasksTypes.EPIC:
+                idNumber = refreshTask.getIdNumber();
+                if (!epicsList.containsKey(idNumber)) {
+                    return null;
+                }
+                Epic epicForRefresh = epicsList.get(idNumber);
+                epicsList.remove(idNumber);
+                epicForRefresh.setName(refreshTask.getName());
+                epicForRefresh.setDescription(refreshTask.getDescription());
+                epicsList.put(idNumber, epicForRefresh);
+                return idNumber;
             default:
                 return null;
         }
@@ -149,13 +155,10 @@ public class InMemoryTaskManager implements TaskManager {
                 subTasksList.remove(i);
             }
             epicsList.remove(taskId);
-            System.out.println("Удален эпик и, соотвественно, всего подзадачи");
         } else if (subTasksList.containsKey(taskId)) {
             int epicId = subTasksList.get(taskId).getEpicIdNumber();
             subTasksList.remove(taskId);
             refreshEpicStatus(getSubTasksFromEpic(epicId), epicId);
-        } else {
-            System.out.println("Нет задачи с таким id");
         }
     }
 
@@ -163,7 +166,6 @@ public class InMemoryTaskManager implements TaskManager {
     public HashMap<Integer, SubTask> getSubTasksFromEpic(int epicTaskId) {
         HashMap<Integer, SubTask> response = new HashMap<>();
         if (!epicsList.containsKey(epicTaskId)) {
-            System.out.println("Нет model.Epic с таким ID");
             return response;
         } else {
             for (SubTask subTask : subTasksList.values()) {
