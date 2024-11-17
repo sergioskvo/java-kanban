@@ -3,8 +3,9 @@ package controllers;
 import model.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface HistoryManager {
-    ArrayList<Task> getHistory();
-    void historyCashAddAndCheck(Task task);
+    void add(Task task);
+    List<Task> getTasks();
 }
