@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
 class InMemoryHistoryManagerTest {
     private HistoryManager historyManagerTest;
 
