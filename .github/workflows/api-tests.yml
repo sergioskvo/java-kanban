@@ -4,5 +4,17 @@ on:
   pull_request:
 
 jobs:
+  pre-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Debugging: Проверка файлов
+        run: |
+          pwd
+          ls -l
+          ls -l test
+
   build:
     uses: yandex-praktikum/java-kanban/.github/workflows/api-tests.yml@ci
