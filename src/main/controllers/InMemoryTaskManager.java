@@ -67,19 +67,29 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteAllTasksWithType(TasksTypes taskType) {
         switch (taskType) {
             case TasksTypes.TASK:
+                deleteAllTasksByTypeInHistory(tasksList);
                 tasksList.clear();
                 break;
             case TasksTypes.EPIC:
+                deleteAllTasksByTypeInHistory(epicsList);
                 epicsList.clear();
+                deleteAllTasksByTypeInHistory(subTasksList);
                 subTasksList.clear();
                 break;
             case TasksTypes.SUBTASK:
+                deleteAllTasksByTypeInHistory(subTasksList);
                 subTasksList.clear();
                 for (Epic epic : epicsList.values()) {
                     epic.setStatus(StatusCodes.NEW);
                 }
                 break;
             default:
+        }
+    }
+
+    private void deleteAllTasksByTypeInHistory(HashMap<Integer, ? extends Task> tasksList) {
+        for (Integer taskId : tasksList.keySet()) {
+            historyManager.remove(taskId);
         }
     }
 
@@ -101,19 +111,18 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Integer refreshTask(Task refreshTask) {
-        int idNumber;
+        int idNumber = refreshTask.getIdNumber();
         TasksTypes taskType = refreshTask.getType();
         switch (taskType) {
             case TasksTypes.TASK:
-                idNumber = refreshTask.getIdNumber();
                 if (!tasksList.containsKey(idNumber)) {
                     return null;
                 }
                 tasksList.remove(idNumber);
                 tasksList.put(idNumber, refreshTask);
+                historyManager.add(refreshTask);
                 return idNumber;
             case TasksTypes.SUBTASK:
-                idNumber = refreshTask.getIdNumber();
                 if (!subTasksList.containsKey(idNumber)) {
                     return null;
                 }
@@ -122,10 +131,10 @@ public class InMemoryTaskManager implements TaskManager {
                 SubTask refreshSubTask = (SubTask) refreshTask;
                 refreshSubTask.setEpicIdNumber(epicId);
                 subTasksList.put(idNumber, refreshSubTask);
+                historyManager.add(refreshSubTask);
                 refreshEpicStatus(getSubTasksFromEpic(epicId), epicId);
                 return idNumber;
             case TasksTypes.EPIC:
-                idNumber = refreshTask.getIdNumber();
                 if (!epicsList.containsKey(idNumber)) {
                     return null;
                 }
@@ -134,6 +143,7 @@ public class InMemoryTaskManager implements TaskManager {
                 epicForRefresh.setName(refreshTask.getName());
                 epicForRefresh.setDescription(refreshTask.getDescription());
                 epicsList.put(idNumber, epicForRefresh);
+                historyManager.add(epicForRefresh);
                 return idNumber;
             default:
                 return null;
@@ -144,6 +154,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteViaId(int taskId) {
         if (tasksList.containsKey(taskId)) {
             tasksList.remove(taskId);
+            historyManager.remove(taskId);
         } else if (epicsList.containsKey(taskId)) {
             ArrayList<Integer> idSubTasksForDel = new ArrayList<>();
             for (SubTask subTask : subTasksList.values()) {
@@ -153,11 +164,14 @@ public class InMemoryTaskManager implements TaskManager {
             }
             for (int i : idSubTasksForDel) {
                 subTasksList.remove(i);
+                historyManager.remove(i);
             }
             epicsList.remove(taskId);
+            historyManager.remove(taskId);
         } else if (subTasksList.containsKey(taskId)) {
             int epicId = subTasksList.get(taskId).getEpicIdNumber();
             subTasksList.remove(taskId);
+            historyManager.remove(taskId);
             refreshEpicStatus(getSubTasksFromEpic(epicId), epicId);
         }
     }
@@ -171,6 +185,7 @@ public class InMemoryTaskManager implements TaskManager {
             for (SubTask subTask : subTasksList.values()) {
                 if (subTask.getEpicIdNumber() == epicTaskId) {
                     response.put(subTask.getIdNumber(), subTask);
+                    historyManager.add(subTask);
                 }
             }
         }
