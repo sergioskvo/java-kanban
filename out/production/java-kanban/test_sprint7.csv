@@ -1,0 +1,4 @@
+id,type,name,status,description,epic
+1,TASK,Завтрак,DONE,Приготовить завтрак,
+2,TASK,Обед,NEW,Приготовить обед,
+3,EPIC,Написать код проекта,NEW,Написать 2 проекта,
