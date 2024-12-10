@@ -12,5 +12,6 @@ public abstract class Managers {
     }
 
     public static FileBackedTaskManager getDefaultFile()  {
-        return new FileBackedTaskManager(new File("/Users/sergeyskvortsov/test_sprint7.csv")); }
+        return new FileBackedTaskManager(new File("/Users/sergeyskvortsov/test_sprint7.csv"));
+    }
 }
