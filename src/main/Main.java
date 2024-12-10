@@ -47,7 +47,7 @@ public class Main {
 //        System.out.println(taskManager.getEpicsList());
 //        System.out.println(taskManager.getSubTasksList());
         Task task45 = new Task("Заffdвтрак", "Приготовить завтракfrr", 233, StatusCodes.DONE);
-        File file = new File("resources/test_sprint7.csv");
+        File file = new File("src/resources/test_sprint7.csv");
        FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
         fileBackedTaskManager.saveTask(task1);
         fileBackedTaskManager.saveTask(task23);
