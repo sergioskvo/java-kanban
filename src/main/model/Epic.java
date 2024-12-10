@@ -7,6 +7,10 @@ public class Epic extends Task {
         super(name, description);
     }
 
+    public Epic(String name, String description, int idNumber, StatusCodes status) {
+        super(name, description, idNumber, status);
+    }
+
     @Override
     public TasksTypes getType() {
         return TasksTypes.EPIC;
