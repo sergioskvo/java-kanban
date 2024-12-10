@@ -7,10 +7,10 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Поехали!");
-//        Task task1 = new Task("Завтрак", "Приготовить завтрак", 23, StatusCodes.DONE);
-//        Task task23 = new Task("Обед", "Приготовить обед", 43, StatusCodes.NEW);
+        Task task1 = new Task("Завтрак", "Приготовить завтрак", 23, StatusCodes.DONE);
+        Task task23 = new Task("Обед", "Приготовить обед", 43, StatusCodes.NEW);
 //        Task task2 = new Task("Обед", "Приготовить обед");
-//        Epic epic1 = new Epic("Написать код проекта", "Написать 2 проекта");
+        Epic epic1 = new Epic("Написать код проекта", "Написать 2 проекта");
 //        SubTask subTask1 = new SubTask("Написать проект спринта 4", "Написать проект спринта 4", 3);
 //        SubTask subTask2 = new SubTask("Написать проект спринта 5", "Написать проект спринта 5", 3);
 //        Epic epic2 = new Epic("Заказать вещи","Заказать вещи");
@@ -47,16 +47,17 @@ public class Main {
 //        System.out.println(taskManager.getEpicsList());
 //        System.out.println(taskManager.getSubTasksList());
         Task task45 = new Task("Заffdвтрак", "Приготовить завтракfrr", 233, StatusCodes.DONE);
-        File file = new File("/Users/sergeyskvortsov/test_sprint7.csv");
-//        FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
-//        fileBackedTaskManager.saveTask(task1);
-//        fileBackedTaskManager.saveTask(task23);
-//        fileBackedTaskManager.saveTask(epic1);
+        File file = new File("resources/test_sprint7.csv");
+       FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
+        fileBackedTaskManager.saveTask(task1);
+        fileBackedTaskManager.saveTask(task23);
+        fileBackedTaskManager.saveTask(epic1);
 //        fileBackedTaskManager.saveTask(subTask1);
 //        fileBackedTaskManager.saveTask(epic2);
-        FileBackedTaskManager manager = FileBackedTaskManager.loadFromFile(file);
+          FileBackedTaskManager manager = FileBackedTaskManager.loadFromFile(file);
 
         manager.saveTask(task45);
+        System.out.println(manager.getEpicsList());
 
     }
 }
