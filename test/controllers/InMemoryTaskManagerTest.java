@@ -1,11 +1,15 @@
 package controllers;
 
+import exceptions.TaskOverlapException;
 import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,7 +18,7 @@ class InMemoryTaskManagerTest {
     private TaskManager inMemoryTaskManagerForList;
 
     @BeforeEach
-    void beforeEach() {
+    void beforeEach() throws TaskOverlapException {
         InMemoryTaskManager.taskId = 0;
         inMemoryTaskManager = Managers.getDefault();
         inMemoryTaskManagerForList = Managers.getDefault();
@@ -37,7 +41,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void saveTask() {
+    void saveTask() throws TaskOverlapException {
         Task task1 = new Task("Task1", "Task1");
         Task task2 = new Task("Task2", "Task2");
         inMemoryTaskManager.saveTask(task1);
@@ -46,7 +50,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void testSaveSubTaskWithoutEpic() {
+    void testSaveSubTaskWithoutEpic() throws TaskOverlapException {
         SubTask task1 = new SubTask("SubTask1", "SubTask1", 3);
         SubTask task2 = new SubTask("SubTask2", "SubTask2", 4);
         SubTask task3 = new SubTask("SubTask3", "SubTask3", 5);
@@ -57,7 +61,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void testSaveSubTaskWith2Epic() {
+    void testSaveSubTaskWith2Epic() throws TaskOverlapException {
         SubTask task1 = new SubTask("SubTask1", "SubTask1", 9);
         SubTask task2 = new SubTask("SubTask2", "SubTask2", 144);
         SubTask task3 = new SubTask("SubTask3", "SubTask3", 10);
@@ -206,5 +210,50 @@ class InMemoryTaskManagerTest {
         expectedResult.add(testSubTask2);
         expectedResult.add(testSubTask3);
         assertEquals(expectedResult, inMemoryTaskManagerForList.getSubTasksList());
+    }
+
+    @Test
+    void shouldReturnTasksSortedByStartTimeWithoutSubtask() throws TaskOverlapException {
+        Task task1 = new Task("Task 1", "Description 1", 1, StatusCodes.NEW,
+                Duration.ofMinutes(60), LocalDateTime.of(2024, 12, 20, 10, 0));
+        Task task2 = new Task("Task 2", "Description 2", 2, StatusCodes.NEW,
+                Duration.ofMinutes(30), LocalDateTime.of(2024, 12, 20, 11, 0));
+        Task task3 = new Task("Task 3", "Description 3", 3, StatusCodes.NEW,
+                null, null);
+        SubTask subTask = new SubTask("SubTask", "SubTask Description", 4, StatusCodes.NEW,
+                1, Duration.ofMinutes(90),
+                LocalDateTime.of(2024, 12, 20, 8, 30));
+        inMemoryTaskManager.saveTask(task1);
+        inMemoryTaskManager.saveTask(task2);
+        inMemoryTaskManager.saveTask(subTask);
+        inMemoryTaskManager.saveTask(task3); // Эта задача без времени не должна попасть в результат
+        List<Task> prioritizedTasks = inMemoryTaskManager.getPrioritizedTasks();
+        assertEquals(2, prioritizedTasks.size(), "Должно быть 3 задачи с указанием времени");
+        assertEquals(task1, prioritizedTasks.get(0), "Первая задача должна быть Task 1");
+        assertEquals(task2, prioritizedTasks.get(1), "Вторая задача должна быть Task 2");
+    }
+
+    @Test
+    void shouldReturnTasksSortedByStartTimeWithSubtask() throws TaskOverlapException {
+        Task task1 = new Task("Task 1", "Description 1", 1, StatusCodes.NEW,
+                Duration.ofMinutes(60), LocalDateTime.of(2024, 12, 20, 10, 0));
+        Task task2 = new Task("Task 2", "Description 2", 2, StatusCodes.NEW,
+                Duration.ofMinutes(30), LocalDateTime.of(2024, 12, 20, 11, 0));
+        Task task3 = new Task("Task 3", "Description 3", 3, StatusCodes.NEW,
+                null, null);
+        SubTask subTask = new SubTask("SubTask", "SubTask Description", 5, StatusCodes.NEW,
+                4, Duration.ofMinutes(90),
+                LocalDateTime.of(2024, 12, 20, 8, 30));
+        Epic epic = new Epic("Epic", "Epic Description", 4, StatusCodes.NEW);
+        inMemoryTaskManager.saveTask(task1);
+        inMemoryTaskManager.saveTask(task2);
+        inMemoryTaskManager.saveTask(epic);
+        inMemoryTaskManager.saveTask(subTask);
+        inMemoryTaskManager.saveTask(task3); // Эта задача без времени не должна попасть в результат
+        List<Task> prioritizedTasks = inMemoryTaskManager.getPrioritizedTasks();
+        assertEquals(3, prioritizedTasks.size(), "Должно быть 3 задачи с указанием времени");
+        assertEquals(subTask, prioritizedTasks.get(0), "Первая задача должна быть Subtask");
+        assertEquals(task1, prioritizedTasks.get(1), "Вторая задача должна быть Task 1");
+        assertEquals(task2, prioritizedTasks.get(2), "Третья задача должна быть Task 2");
     }
 }
