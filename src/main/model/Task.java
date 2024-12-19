@@ -1,13 +1,18 @@
 package model;
 
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Task {
     private String name;
     private String description;
-    private int idNumber;
+    private Integer idNumber;
     private StatusCodes status;
+    private Duration duration;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 
 
     public Task(String name, String description) {
@@ -16,14 +21,18 @@ public class Task {
         this.status = StatusCodes.NEW;
     }
 
-    public Task(String name, String description, int idNumber, StatusCodes status) {
+    public Task(String name, String description, Integer idNumber, StatusCodes status, Duration duration,
+                LocalDateTime startTime) {
         this.name = name;
         this.description = description;
         this.idNumber = idNumber;
         this.status = status;
+        this.duration = duration;
+        this.startTime = startTime;
+        this.endTime = getEndTime();
     }
 
-    public int getIdNumber() {
+    public Integer getIdNumber() {
         return idNumber;
     }
 
@@ -35,7 +44,7 @@ public class Task {
         return description;
     }
 
-    public void setIdNumber(int idNumber) {
+    public void setIdNumber(Integer idNumber) {
         this.idNumber = idNumber;
     }
 
@@ -59,6 +68,33 @@ public class Task {
         return TasksTypes.TASK;
     }
 
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        if (startTime == null || duration == null) {
+            return null;
+        }
+        return startTime.plus(duration);
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
     @Override
     public String toString() {
         return "model.Task{" +
@@ -66,6 +102,9 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", idNumber=" + idNumber +
                 ", status=" + status +
+                ", startTime=" + startTime +
+                ", duration=" + duration +
+                ", endTime=" + endTime +
                 '}';
     }
 
