@@ -7,6 +7,7 @@ import model.TasksTypes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public interface TaskManager {
     int saveTask(Task task);
@@ -30,4 +31,6 @@ public interface TaskManager {
     ArrayList<Epic> getEpicsList();
 
     ArrayList<SubTask> getSubTasksList();
+
+    List<Task> getPrioritizedTasks();
 }
