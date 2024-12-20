@@ -1,5 +1,4 @@
 import controllers.FileBackedTaskManager;
-import exceptions.TaskOverlapException;
 import model.*;
 
 import java.io.File;
@@ -9,7 +8,7 @@ import java.time.temporal.ChronoUnit;
 
 public class Main {
 
-    public static void main(String[] args) throws TaskOverlapException {
+    public static void main(String[] args) {
         System.out.println("Поехали!");
         Task task1 = new Task("Завтрак", "Приготовить завтрак", 23, StatusCodes.DONE, Duration.of(4, ChronoUnit.HOURS), LocalDateTime.of(2024, 12, 20, 10, 0, 0));
         Task task23 = new Task("Обед", "Приготовить обед", 43, StatusCodes.NEW, Duration.of(4, ChronoUnit.HOURS), LocalDateTime.of(2024, 12, 20, 15, 0, 0));

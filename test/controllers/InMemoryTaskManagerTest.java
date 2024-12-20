@@ -1,6 +1,5 @@
 package controllers;
 
-import exceptions.TaskOverlapException;
 import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,7 @@ class InMemoryTaskManagerTest {
     private TaskManager inMemoryTaskManagerForList;
 
     @BeforeEach
-    void beforeEach() throws TaskOverlapException {
+    void beforeEach() {
         InMemoryTaskManager.taskId = 0;
         inMemoryTaskManager = Managers.getDefault();
         inMemoryTaskManagerForList = Managers.getDefault();
@@ -41,7 +40,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void saveTask() throws TaskOverlapException {
+    void saveTask() {
         Task task1 = new Task("Task1", "Task1");
         Task task2 = new Task("Task2", "Task2");
         inMemoryTaskManager.saveTask(task1);
@@ -50,7 +49,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void testSaveSubTaskWithoutEpic() throws TaskOverlapException {
+    void testSaveSubTaskWithoutEpic() {
         SubTask task1 = new SubTask("SubTask1", "SubTask1", 3);
         SubTask task2 = new SubTask("SubTask2", "SubTask2", 4);
         SubTask task3 = new SubTask("SubTask3", "SubTask3", 5);
@@ -61,7 +60,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void testSaveSubTaskWith2Epic() throws TaskOverlapException {
+    void testSaveSubTaskWith2Epic() {
         SubTask task1 = new SubTask("SubTask1", "SubTask1", 9);
         SubTask task2 = new SubTask("SubTask2", "SubTask2", 144);
         SubTask task3 = new SubTask("SubTask3", "SubTask3", 10);
@@ -213,7 +212,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void shouldReturnTasksSortedByStartTimeWithoutSubtask() throws TaskOverlapException {
+    void shouldReturnTasksSortedByStartTimeWithoutSubtask() {
         Task task1 = new Task("Task 1", "Description 1", 1, StatusCodes.NEW,
                 Duration.ofMinutes(60), LocalDateTime.of(2024, 12, 20, 10, 0));
         Task task2 = new Task("Task 2", "Description 2", 2, StatusCodes.NEW,
@@ -234,7 +233,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void shouldReturnTasksSortedByStartTimeWithSubtask() throws TaskOverlapException {
+    void shouldReturnTasksSortedByStartTimeWithSubtask() {
         Task task1 = new Task("Task 1", "Description 1", 1, StatusCodes.NEW,
                 Duration.ofMinutes(60), LocalDateTime.of(2024, 12, 20, 10, 0));
         Task task2 = new Task("Task 2", "Description 2", 2, StatusCodes.NEW,

@@ -1,6 +1,5 @@
 package controllers;
 
-import exceptions.TaskOverlapException;
 import model.Epic;
 import model.SubTask;
 import model.Task;
@@ -11,11 +10,11 @@ import java.util.HashMap;
 import java.util.List;
 
 public interface TaskManager {
-    int saveTask(Task task) throws TaskOverlapException;
+    int saveTask(Task task);
 
     int saveTask(Epic epic);
 
-    Integer saveTask(SubTask subTask) throws TaskOverlapException;
+    Integer saveTask(SubTask subTask);
 
     void deleteAllTasksWithType(TasksTypes taskType);
 

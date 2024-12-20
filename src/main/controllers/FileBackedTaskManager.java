@@ -21,7 +21,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     }
 
     @Override
-    public int saveTask(Task task) throws TaskOverlapException {
+    public int saveTask(Task task) {
         super.saveTask(task);
         save();
         return task.getIdNumber();
@@ -37,7 +37,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     }
 
     @Override
-    public Integer saveTask(SubTask subTask) throws TaskOverlapException {
+    public Integer saveTask(SubTask subTask) {
         Integer taskId = super.saveTask(subTask);
         save();
         return taskId;

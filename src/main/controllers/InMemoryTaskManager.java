@@ -20,7 +20,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public int saveTask(Task task) throws TaskOverlapException {
+    public int saveTask(Task task) {
         if (isTaskOverlapping(task, prioritizedTasks)) {
             throw new TaskOverlapException("Задача пересекается с уже существующей задачей");
         }
@@ -42,7 +42,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Integer saveTask(SubTask subTask) throws TaskOverlapException {
+    public Integer saveTask(SubTask subTask) {
         if (isTaskOverlapping(subTask, prioritizedTasks)) {
             throw new TaskOverlapException("Подзадача пересекается с уже существующей задачей");
         }
@@ -80,6 +80,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteAllTasksWithType(TasksTypes taskType) {
         switch (taskType) {
             case TasksTypes.TASK:
+                tasksList.forEach((integer, task) -> prioritizedTasks.remove(task));
                 deleteAllTasksByTypeInHistory(tasksList);
                 tasksList.clear();
                 break;
@@ -90,6 +91,7 @@ public class InMemoryTaskManager implements TaskManager {
                 subTasksList.clear();
                 break;
             case TasksTypes.SUBTASK:
+                subTasksList.forEach((integer, subTask) -> prioritizedTasks.remove(subTask));
                 deleteAllTasksByTypeInHistory(subTasksList);
                 subTasksList.clear();
                 epicsList.values().forEach(epic -> {
