@@ -349,10 +349,8 @@ public class HttpTaskServer {
     }
 
     // Базовый обработчик для отправки стандартных ответов
-    public static abstract class BaseHttpHandler implements HttpHandler {
+    public static class BaseHttpHandler implements HttpHandler {
 
-        //        protected final TaskManager taskManager = Managers.getDefault();
-//        protected final HistoryManager historyManager = Managers.getDefaultHistory();
         protected final Gson gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
                 .registerTypeAdapter(Duration.class, new DurationAdapter())
@@ -380,6 +378,11 @@ public class HttpTaskServer {
         protected void sendErrorResponse(HttpExchange exchange, int statusCode, String message) throws IOException {
             String response = "{\"error\": \"" + message + "\"}";
             sendResponse(exchange, statusCode, response);
+        }
+
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+
         }
     }
 }
