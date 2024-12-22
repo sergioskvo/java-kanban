@@ -349,7 +349,7 @@ public class HttpTaskServer {
     }
 
     // Базовый обработчик для отправки стандартных ответов
-    static abstract class BaseHttpHandler implements HttpHandler {
+    public static abstract class BaseHttpHandler implements HttpHandler {
 
         //        protected final TaskManager taskManager = Managers.getDefault();
 //        protected final HistoryManager historyManager = Managers.getDefaultHistory();
