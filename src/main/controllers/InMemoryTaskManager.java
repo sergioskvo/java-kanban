@@ -50,6 +50,7 @@ public class InMemoryTaskManager implements TaskManager {
             if (subTask.getIdNumber() == null) {
                 subTask.setIdNumber(++taskId);
             }
+            System.out.println(subTask);
             subTasksList.put(subTask.getIdNumber(), subTask);
             HashMap<Integer, SubTask> subTasksFromEpic = getSubTasksFromEpic(subTask.getEpicIdNumber());
             refreshEpicStatus(subTasksFromEpic, subTask.getEpicIdNumber());
@@ -114,6 +115,7 @@ public class InMemoryTaskManager implements TaskManager {
             return tasksList.get(taskId);
         } else if (epicsList.containsKey(taskId)) {
             historyManager.add(epicsList.get(taskId));
+            System.out.println(historyManager.getTasks());
             return epicsList.get(taskId);
         } else if (subTasksList.containsKey(taskId)) {
             historyManager.add(subTasksList.get(taskId));
@@ -224,6 +226,11 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Task> getPrioritizedTasks() {
         return new ArrayList<>(prioritizedTasks);
+    }
+
+    @Override
+    public List<Task> getTasks() {
+        return historyManager.getTasks();
     }
 
     private void updatePrioritizedTasks(Task task) {
