@@ -32,6 +32,9 @@ public class Task {
         this.endTime = getEndTime();
     }
 
+    public Task() {
+    }
+
     public Integer getIdNumber() {
         return idNumber;
     }
